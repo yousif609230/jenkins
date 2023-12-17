@@ -1,3 +1,5 @@
+# this file will create a docker container that will be work as remote host and some jenkins joob will be run in
+
 FROM centos
 
 RUN cd /etc/yum.repos.d/

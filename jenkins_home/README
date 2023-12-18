@@ -1,1 +1,2 @@
-this volume will be mapped with jenkins container
+- this directory is volume that will be mapped with jenkins container 
+- ansible dorectory is the volume that will store ssh keys

@@ -3,9 +3,9 @@ FROM jenkins/jenkins
 USER root
 
 # Install ansible
-RUN curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" && python get-pip.py
-
-RUN pip install -U ansible
+RUN apt update -y && \
+    apt install python3-pip -y && \
+    pip install ansible --break-system-packages
 
 # Install Docker
 
@@ -28,4 +28,3 @@ apt-get -y install docker-ce
 RUN curl -L "https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
 
 RUN usermod -aG docker jenkins
-

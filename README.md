@@ -1,6 +1,6 @@
 # jenkins
 
-# to pull the jenkins image
+# to pull the jenkins image from docker repo
 1 - docker pull jenkins:2.60.3
 # to create 2 directory for jenkins files and the second for the data
 2 - mkdir jenkins

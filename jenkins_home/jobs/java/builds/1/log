@@ -1,0 +1,22 @@
+Started by user [8mha:////4K+qg1k4FPvuzvE/3yLyikQEX8+zOyMG71byQXWc9NuBAAAAlx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAzWEgZu/dLi1CL9xJTczDwAj6GcLcAAAAA=[0madmin
+Running as SYSTEM
+Building in workspace /var/jenkins_home/workspace/java
+The recommended git tool is: NONE
+No credentials specified
+Cloning the remote Git repository
+Cloning repository https://github.com/anshulc55/Jenkins_Upgradev3.git
+ > git init /var/jenkins_home/workspace/java # timeout=10
+Fetching upstream changes from https://github.com/anshulc55/Jenkins_Upgradev3.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.39.2'
+ > git fetch --tags --force --progress -- https://github.com/anshulc55/Jenkins_Upgradev3.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/anshulc55/Jenkins_Upgradev3.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+Checking out Revision bb8ba2453161dc640ce169b5c794d94ebb9ab318 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f bb8ba2453161dc640ce169b5c794d94ebb9ab318 # timeout=10
+Commit message: "Merge pull request #88 from AsueDerick/master"
+First time build. Skipping changelog.
+Finished: SUCCESS

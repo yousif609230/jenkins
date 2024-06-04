@@ -10,7 +10,7 @@
 5 - vi docker-compose.yml (copy all content in yml file here)
 # change the ownership of the jenkins_home directory to the main admin
 6 - sudo chown 1000:1000 jenkins_home -R
-#run docker compose file
+# run docker compose file
 7- docker compose up -d 
 
 #to find first time password

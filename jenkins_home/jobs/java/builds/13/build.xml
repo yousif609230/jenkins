@@ -1,0 +1,71 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<build>
+  <actions>
+    <hudson.model.CauseAction>
+      <causeBag class="linked-hash-map">
+        <entry>
+          <hudson.model.Cause_-UserIdCause>
+            <userId>admin</userId>
+          </hudson.model.Cause_-UserIdCause>
+          <int>1</int>
+        </entry>
+      </causeBag>
+    </hudson.model.CauseAction>
+    <jenkins.metrics.impl.TimeInQueueAction plugin="metrics@4.2.21-451.vd51df8df52ec">
+      <queuingDurationMillis>2</queuingDurationMillis>
+      <blockedDurationMillis>0</blockedDurationMillis>
+      <buildableDurationMillis>1</buildableDurationMillis>
+      <waitingDurationMillis>0</waitingDurationMillis>
+    </jenkins.metrics.impl.TimeInQueueAction>
+    <hudson.plugins.git.util.BuildData plugin="git@5.2.2">
+      <buildsByBranchName>
+        <entry>
+          <string>refs/remotes/origin/master</string>
+          <hudson.plugins.git.util.Build>
+            <marked plugin="git-client@4.7.0">
+              <sha1>bb8ba2453161dc640ce169b5c794d94ebb9ab318</sha1>
+              <branches class="list">
+                <hudson.plugins.git.Branch>
+                  <sha1 reference="../../../sha1"/>
+                  <name>refs/remotes/origin/master</name>
+                </hudson.plugins.git.Branch>
+              </branches>
+            </marked>
+            <revision reference="../marked"/>
+            <hudsonBuildNumber>13</hudsonBuildNumber>
+          </hudson.plugins.git.util.Build>
+        </entry>
+      </buildsByBranchName>
+      <lastBuild reference="../buildsByBranchName/entry/hudson.plugins.git.util.Build"/>
+      <scmName></scmName>
+      <remoteUrls>
+        <string>https://github.com/anshulc55/Jenkins_Upgradev3.git</string>
+      </remoteUrls>
+    </hudson.plugins.git.util.BuildData>
+    <hudson.scm.SCMRevisionState_-None/>
+    <hudson.tasks.junit.TestResultAction plugin="junit@1265.v65b_14fa_f12f0">
+      <descriptions class="concurrent-hash-map"/>
+      <failCount>0</failCount>
+      <skipCount>0</skipCount>
+      <totalCount>5</totalCount>
+      <testData/>
+    </hudson.tasks.junit.TestResultAction>
+  </actions>
+  <queueId>13</queueId>
+  <timestamp>1717520557068</timestamp>
+  <startTime>1717520557070</startTime>
+  <result>SUCCESS</result>
+  <duration>11327</duration>
+  <charset>UTF-8</charset>
+  <keepLog>false</keepLog>
+  <builtOn></builtOn>
+  <workspace>/var/jenkins_home/workspace/java</workspace>
+  <hudsonVersion>2.460</hudsonVersion>
+  <scm class="hudson.plugins.git.GitChangeLogParser" plugin="git@5.2.2">
+    <authorOrCommitter>false</authorOrCommitter>
+    <showEntireCommitSummaryInChanges>true</showEntireCommitSummaryInChanges>
+  </scm>
+  <culprits class="java.util.Collections$UnmodifiableSet">
+    <c class="sorted-set"/>
+  </culprits>
+</build>

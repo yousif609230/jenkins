@@ -1,0 +1,9 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<result plugin="junit@1265.v65b_14fa_f12f0">
+  <suites/>
+  <duration>0.0</duration>
+  <skipOldReports>false</skipOldReports>
+  <startTime>-1</startTime>
+  <stdioRetention>NONE</stdioRetention>
+  <keepProperties>false</keepProperties>
+</result>

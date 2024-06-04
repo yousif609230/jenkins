@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Created-By: Maven Archiver 3.6.0
+Build-Jdk-Spec: 11
+Specification-Title: MSTest plugin
+Specification-Version: 1.0
+Implementation-Title: MSTest plugin
+Implementation-Version: 1.0.5
+Group-Id: org.jvnet.hudson.plugins
+Artifact-Id: mstest
+Short-Name: mstest
+Long-Name: MSTest plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/MSTest+Plugin
+Plugin-Version: 1.0.5
+Hudson-Version: 2.401.3
+Jenkins-Version: 2.401.3
+Plugin-Dependencies: junit:1240.vf9529b_881428
+Plugin-Developers: Ivo Bellin Salarin:nilleb:me@nilleb.com,Joseph Peters
+ en:casz:
+Plugin-ScmConnection: scm:git:https://github.com:jenkinsci/mstest-plugin
+ .git
+Plugin-ScmTag: mstest-1.0.5
+Plugin-ScmUrl: https://github.com/jenkinsci/mstest-plugin
+Plugin-GitHash: 2667deb9d0ff297b8980febcb753639e7ace5da9
+Implementation-Build: 2667deb9d0ff297b8980febcb753639e7ace5da9
+

@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Created-By: Maven Archiver 3.5.2
+Build-Jdk-Spec: 17
+Specification-Title: .NET SDK Support
+Specification-Version: 1.4
+Implementation-Title: .NET SDK Support
+Implementation-Version: 1.4.0
+Group-Id: io.jenkins.plugins
+Short-Name: dotnet-sdk
+Long-Name: .NET SDK Support
+Url: https://github.com/jenkinsci/dotnet-sdk-plugin
+Minimum-Java-Version: 1.8
+Plugin-Version: 1.4.0
+Hudson-Version: 2.289.1
+Jenkins-Version: 2.289.1
+Plugin-Dependencies: credentials:2.6.1.1,plain-credentials:1.8
+Plugin-Developers: Tim Van Holder:Zastai:tim.vanholder@gmail.com
+Plugin-License-Name: MIT License
+Plugin-License-Url: https://opensource.org/licenses/MIT
+Plugin-ScmUrl: https://github.com/jenkinsci/dotnet-sdk-plugin
+

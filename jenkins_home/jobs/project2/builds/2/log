@@ -1,0 +1,126 @@
+Started by user [8mha:////4K+qg1k4FPvuzvE/3yLyikQEX8+zOyMG71byQXWc9NuBAAAAlx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAzWEgZu/dLi1CL9xJTczDwAj6GcLcAAAAA=[0madmin
+Running as SYSTEM
+Building in workspace /var/jenkins_home/workspace/project2
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/jenkins_home/workspace/project2/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/anshulc55/Jenkins_Upgradev3.git # timeout=10
+Using shallow fetch with depth 1
+Cleaning workspace
+ > git rev-parse --verify HEAD # timeout=10
+Resetting working tree
+ > git reset --hard # timeout=10
+ > git clean -ffdx # timeout=10
+Fetching upstream changes from https://github.com/anshulc55/Jenkins_Upgradev3.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.39.2'
+ > git fetch --tags --force --progress --depth=1 -- https://github.com/anshulc55/Jenkins_Upgradev3.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+Checking out Revision bb8ba2453161dc640ce169b5c794d94ebb9ab318 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f bb8ba2453161dc640ce169b5c794d94ebb9ab318 # timeout=10
+Commit message: "Merge pull request #88 from AsueDerick/master"
+ > git rev-list --no-walk bb8ba2453161dc640ce169b5c794d94ebb9ab318 # timeout=10
+[project2] $ /bin/sh -xe /tmp/jenkins3618034494743180050.sh
++ dotnet build ./jenkins-plugin-model/src/Pi.Web/Pi.Web.csproj
+  Determining projects to restore...
+/usr/share/dotnet/sdk/8.0.301/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.EolTargetFrameworks.targets(32,5): warning NETSDK1138: The target framework 'netcoreapp3.1' is out of support and will not receive security updates in the future. Please refer to https://aka.ms/dotnet-core-support for more information about the support policy. [/var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Web/Pi.Web.csproj]
+/usr/share/dotnet/sdk/8.0.301/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.EolTargetFrameworks.targets(32,5): warning NETSDK1138: The target framework 'netcoreapp3.1' is out of support and will not receive security updates in the future. Please refer to https://aka.ms/dotnet-core-support for more information about the support policy. [/var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Web/Pi.Web.csproj]
+  Restored /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Runtime/Pi.Runtime.csproj (in 273 ms).
+  Restored /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Web/Pi.Web.csproj (in 273 ms).
+  Restored /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Math/Pi.Math.csproj (in 273 ms).
+/usr/share/dotnet/sdk/8.0.301/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.EolTargetFrameworks.targets(32,5): warning NETSDK1138: The target framework 'netcoreapp3.1' is out of support and will not receive security updates in the future. Please refer to https://aka.ms/dotnet-core-support for more information about the support policy. [/var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Web/Pi.Web.csproj]
+  Pi.Math -> /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Math/bin/Debug/netstandard2.0/Pi.Math.dll
+  Pi.Runtime -> /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Runtime/bin/Debug/netstandard2.0/Pi.Runtime.dll
+  Pi.Web -> /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Web/bin/Debug/netcoreapp3.1/Pi.Web.dll
+  Pi.Web -> /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Web/bin/Debug/netcoreapp3.1/Pi.Web.Views.dll
+
+Build succeeded.
+
+/usr/share/dotnet/sdk/8.0.301/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.EolTargetFrameworks.targets(32,5): warning NETSDK1138: The target framework 'netcoreapp3.1' is out of support and will not receive security updates in the future. Please refer to https://aka.ms/dotnet-core-support for more information about the support policy. [/var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Web/Pi.Web.csproj]
+/usr/share/dotnet/sdk/8.0.301/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.EolTargetFrameworks.targets(32,5): warning NETSDK1138: The target framework 'netcoreapp3.1' is out of support and will not receive security updates in the future. Please refer to https://aka.ms/dotnet-core-support for more information about the support policy. [/var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Web/Pi.Web.csproj]
+/usr/share/dotnet/sdk/8.0.301/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.EolTargetFrameworks.targets(32,5): warning NETSDK1138: The target framework 'netcoreapp3.1' is out of support and will not receive security updates in the future. Please refer to https://aka.ms/dotnet-core-support for more information about the support policy. [/var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Web/Pi.Web.csproj]
+    3 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.81
+[project2] $ /bin/sh -xe /tmp/jenkins16076383992688502851.sh
++ dotnet test --logger trx;LogFileName=Pi.Math.trx ./jenkins-plugin-model/src/Pi.Math.Tests/Pi.Math.Tests.csproj
+  Determining projects to restore...
+  Restored /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Math.Tests/Pi.Math.Tests.csproj (in 326 ms).
+  1 of 2 projects are up-to-date for restore.
+  Pi.Math -> /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Math/bin/Debug/netstandard2.0/Pi.Math.dll
+  Pi.Math.Tests -> /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Math.Tests/bin/Debug/net7.0/Pi.Math.Tests.dll
+Test run for /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Math.Tests/bin/Debug/net7.0/Pi.Math.Tests.dll (.NETCoreApp,Version=v7.0)
+Microsoft (R) Test Execution Command Line Tool Version 17.10.0 (x64)
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+Results File: /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Math.Tests/TestResults/Pi.Math.trx
+
+Passed!  - Failed:     0, Passed:     2, Skipped:     0, Total:     2, Duration:  - Pi.Math.Tests.dll (net7.0)
++ dotnet test --logger trx;LogFileName=Pi.Runtime.trx ./jenkins-plugin-model/src/Pi.Runtime.Tests/Pi.Runtime.Tests.csproj
+  Determining projects to restore...
+  Restored /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Runtime.Tests/Pi.Runtime.Tests.csproj (in 341 ms).
+  1 of 2 projects are up-to-date for restore.
+  Pi.Runtime -> /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Runtime/bin/Debug/netstandard2.0/Pi.Runtime.dll
+  Pi.Runtime.Tests -> /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Runtime.Tests/bin/Debug/net7.0/Pi.Runtime.Tests.dll
+Test run for /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Runtime.Tests/bin/Debug/net7.0/Pi.Runtime.Tests.dll (.NETCoreApp,Version=v7.0)
+Microsoft (R) Test Execution Command Line Tool Version 17.10.0 (x64)
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+Results File: /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Runtime.Tests/TestResults/Pi.Runtime.trx
+
+Passed!  - Failed:     0, Passed:     3, Skipped:     0, Total:     3, Duration:  - Pi.Runtime.Tests.dll (net7.0)
+[project2] $ docker build -t yousif101/jenkins-demo2 --pull=true --file=jenkins-plugin-model/src/demo2-publish/dockerfile /var/jenkins_home/workspace/project2
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from dockerfile
+#1 transferring dockerfile: 518B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for mcr.microsoft.com/dotnet/aspnet:7.0
+#2 DONE 0.3s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [stage-1 1/1] FROM mcr.microsoft.com/dotnet/aspnet:7.0@sha256:c7d9ee6cd01afe9aa80642e577c7cec9f5d87f88e5d70bd36fd61072079bc55b
+#4 CACHED
+
+#5 exporting to image
+#5 exporting layers done
+#5 writing image sha256:3b56327578ad401e387ecc965e0bc05185520b7476e4649d44347a972354d0dd done
+#5 naming to docker.io/yousif101/jenkins-demo2 done
+#5 DONE 0.0s
+[project2] $ docker push yousif101/jenkins-demo2
+Using default tag: latest
+The push refers to repository [docker.io/yousif101/jenkins-demo2]
+270f7fde987a: Preparing
+4d29f6e29d10: Preparing
+b4ec6db9c251: Preparing
+ba941484fbe1: Preparing
+123eef91533f: Preparing
+denied: requested access to the resource is denied
+Build step 'Docker Build and Publish' marked build as failure
+[MSTEST-PLUGIN] INFO processing test results in file(s) **/*.trx
+[MSTEST-PLUGIN] INFO processing report file: /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Math.Tests/TestResults/Pi.Math.trx
+[MSTEST-PLUGIN] WARNING Unable to delete the file /var/jenkins_home/workspace/project2/temporary-junit-reports
+[MSTEST-PLUGIN] INFO This file is a reserved temporary file. You can delete it safely.
+[MSTEST-PLUGIN] INFO XML coverage report file not found: /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Math.Tests/TestResults/vstest.coveragexml
+
+[MSTEST-PLUGIN] INFO XML coverage report file not found: /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Math.Tests/TestResults/Pi.coveragexml
+
+[MSTEST-PLUGIN] INFO processing report file: /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Runtime.Tests/TestResults/Pi.Runtime.trx
+[MSTEST-PLUGIN] WARNING Unable to delete the file /var/jenkins_home/workspace/project2/temporary-junit-reports
+[MSTEST-PLUGIN] INFO This file is a reserved temporary file. You can delete it safely.
+[MSTEST-PLUGIN] INFO XML coverage report file not found: /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Runtime.Tests/TestResults/vstest.coveragexml
+
+[MSTEST-PLUGIN] INFO XML coverage report file not found: /var/jenkins_home/workspace/project2/jenkins-plugin-model/src/Pi.Runtime.Tests/TestResults/Pi.coveragexml
+
+Finished: FAILURE

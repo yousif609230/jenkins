@@ -1,0 +1,85 @@
+Started by user [8mha:////4K+qg1k4FPvuzvE/3yLyikQEX8+zOyMG71byQXWc9NuBAAAAlx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAzWEgZu/dLi1CL9xJTczDwAj6GcLcAAAAA=[0madmin
+Running as SYSTEM
+Building in workspace /var/jenkins_home/workspace/java
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/jenkins_home/workspace/java/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/anshulc55/Jenkins_Upgradev3.git # timeout=10
+Fetching upstream changes from https://github.com/anshulc55/Jenkins_Upgradev3.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.39.2'
+ > git fetch --tags --force --progress -- https://github.com/anshulc55/Jenkins_Upgradev3.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+Checking out Revision bb8ba2453161dc640ce169b5c794d94ebb9ab318 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f bb8ba2453161dc640ce169b5c794d94ebb9ab318 # timeout=10
+Commit message: "Merge pull request #88 from AsueDerick/master"
+ > git rev-list --no-walk bb8ba2453161dc640ce169b5c794d94ebb9ab318 # timeout=10
+[java] $ /bin/sh -xe /tmp/jenkins13668936744277656411.sh
++ cd /var/jenkins_home/workspace/java/maven-samples/single-module
++ mvn clean install
+[[1;34mINFO[m] Scanning for projects...
+[[1;33mWARNING[m] 
+[[1;33mWARNING[m] Some problems were encountered while building the effective model for com.example.maven-samples:single-module-project:jar:1.0-SNAPSHOT
+[[1;33mWARNING[m] Reporting configuration should be done in <reporting> section, not in maven-site-plugin <configuration> as reportPlugins parameter. @ line 67, column 24
+[[1;33mWARNING[m] 
+[[1;33mWARNING[m] It is highly recommended to fix these problems because they threaten the stability of your build.
+[[1;33mWARNING[m] 
+[[1;33mWARNING[m] For this reason, future Maven versions might no longer support building such malformed projects.
+[[1;33mWARNING[m] 
+[[1;33mWARNING[m] The project com.example.maven-samples:single-module-project:jar:1.0-SNAPSHOT uses prerequisites which is only intended for maven-plugin projects but not for non maven-plugin projects. For such purposes you should use the maven-enforcer-plugin. See https://maven.apache.org/enforcer/enforcer-rules/requireMavenVersion.html
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m----------< [0;36mcom.example.maven-samples:single-module-project[0;1m >-----------[m
+[[1;34mINFO[m] [1mBuilding A Single Maven Module 1.0-SNAPSHOT[m
+[[1;34mINFO[m] [1m--------------------------------[ jar ]---------------------------------[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-clean-plugin:2.5:clean[m [1m(default-clean)[m @ [36msingle-module-project[0;1m ---[m
+[[1;34mINFO[m] Deleting /var/jenkins_home/workspace/java/maven-samples/single-module/target
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-resources-plugin:2.5:resources[m [1m(default-resources)[m @ [36msingle-module-project[0;1m ---[m
+[debug] execute contextualize
+[[1;34mINFO[m] Using 'utf-8' encoding to copy filtered resources.
+[[1;34mINFO[m] skip non existing resourceDirectory /var/jenkins_home/workspace/java/maven-samples/single-module/src/main/resources
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-compiler-plugin:2.3.2:compile[m [1m(default-compile)[m @ [36msingle-module-project[0;1m ---[m
+[[1;34mINFO[m] Compiling 1 source file to /var/jenkins_home/workspace/java/maven-samples/single-module/target/classes
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-resources-plugin:2.5:testResources[m [1m(default-testResources)[m @ [36msingle-module-project[0;1m ---[m
+[debug] execute contextualize
+[[1;34mINFO[m] Using 'utf-8' encoding to copy filtered resources.
+[[1;34mINFO[m] skip non existing resourceDirectory /var/jenkins_home/workspace/java/maven-samples/single-module/src/test/resources
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-compiler-plugin:2.3.2:testCompile[m [1m(default-testCompile)[m @ [36msingle-module-project[0;1m ---[m
+[[1;34mINFO[m] Compiling 1 source file to /var/jenkins_home/workspace/java/maven-samples/single-module/target/test-classes
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-surefire-plugin:2.11:test[m [1m(default-test)[m @ [36msingle-module-project[0;1m ---[m
+[[1;34mINFO[m] Surefire report directory: /var/jenkins_home/workspace/java/maven-samples/single-module/target/surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running com.example.TestGreeter
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.027 sec
+
+Results :
+
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
+
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-jar-plugin:3.1.0:jar[m [1m(default-jar)[m @ [36msingle-module-project[0;1m ---[m
+[[1;34mINFO[m] Building jar: /var/jenkins_home/workspace/java/maven-samples/single-module/target/single-module-project.jar
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-install-plugin:2.4:install[m [1m(default-install)[m @ [36msingle-module-project[0;1m ---[m
+[[1;34mINFO[m] Installing /var/jenkins_home/workspace/java/maven-samples/single-module/target/single-module-project.jar to /root/.m2/repository/com/example/maven-samples/single-module-project/1.0-SNAPSHOT/single-module-project-1.0-SNAPSHOT.jar
+[[1;34mINFO[m] Installing /var/jenkins_home/workspace/java/maven-samples/single-module/pom.xml to /root/.m2/repository/com/example/maven-samples/single-module-project/1.0-SNAPSHOT/single-module-project-1.0-SNAPSHOT.pom
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] [1;32mBUILD SUCCESS[m
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] Total time:  1.361 s
+[[1;34mINFO[m] Finished at: 2024-06-01T07:12:50Z
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[0m[0mArchiving artifacts
+Recording test results
+[Checks API] No suitable checks publisher found.
+Finished: SUCCESS

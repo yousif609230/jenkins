@@ -27,7 +27,18 @@
     </branches>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
     <submoduleCfg class="empty-list"/>
-    <extensions/>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.CloneOption>
+        <shallow>true</shallow>
+        <noTags>false</noTags>
+        <reference></reference>
+        <depth>1</depth>
+        <honorRefspec>false</honorRefspec>
+      </hudson.plugins.git.extensions.impl.CloneOption>
+      <hudson.plugins.git.extensions.impl.CleanBeforeCheckout>
+        <deleteUntrackedNestedRepositories>true</deleteUntrackedNestedRepositories>
+      </hudson.plugins.git.extensions.impl.CleanBeforeCheckout>
+    </extensions>
   </scm>
   <canRoam>true</canRoam>
   <disabled>false</disabled>
@@ -36,15 +47,24 @@
   <triggers/>
   <concurrentBuild>false</concurrentBuild>
   <builders>
-    <hudson.tasks.Maven>
-      <targets>clean package</targets>
-      <pom>Jenkins_Upgradev3/tree/master/maven-samples/single-module/pom.xml</pom>
-      <usePrivateRepository>false</usePrivateRepository>
-      <settings class="jenkins.mvn.DefaultSettingsProvider"/>
-      <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
-      <injectBuildVariables>false</injectBuildVariables>
-    </hudson.tasks.Maven>
+    <hudson.tasks.Shell>
+      <command>dotnet build ./jenkins-plugin-model/src/Pi.Web/Pi.Web.csproj</command>
+      <configuredLocalRules/>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>dotnet test --logger &quot;trx;LogFileName=Pi.Math.trx&quot; ./jenkins-plugin-model/src/Pi.Math.Tests/Pi.Math.Tests.csproj
+dotnet test --logger &quot;trx;LogFileName=Pi.Runtime.trx&quot; ./jenkins-plugin-model/src/Pi.Runtime.Tests/Pi.Runtime.Tests.csproj</command>
+      <configuredLocalRules/>
+    </hudson.tasks.Shell>
   </builders>
-  <publishers/>
+  <publishers>
+    <hudson.plugins.mstest.MSTestPublisher plugin="mstest@1.0.5">
+      <testResultsFile>**/*.trx</testResultsFile>
+      <failOnError>true</failOnError>
+      <keepLongStdio>false</keepLongStdio>
+      <logLevel>INFO</logLevel>
+      <buildTime>0</buildTime>
+    </hudson.plugins.mstest.MSTestPublisher>
+  </publishers>
   <buildWrappers/>
 </project>

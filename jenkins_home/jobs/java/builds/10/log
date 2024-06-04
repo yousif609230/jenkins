@@ -1,0 +1,70 @@
+Started by user [8mha:////4K+qg1k4FPvuzvE/3yLyikQEX8+zOyMG71byQXWc9NuBAAAAlx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAzWEgZu/dLi1CL9xJTczDwAj6GcLcAAAAA=[0madmin
+Running as SYSTEM
+Building in workspace /var/jenkins_home/workspace/java
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/jenkins_home/workspace/java/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/anshulc55/Jenkins_Upgradev3.git # timeout=10
+Using shallow fetch with depth 1
+Cleaning workspace
+ > git rev-parse --verify HEAD # timeout=10
+Resetting working tree
+ > git reset --hard # timeout=10
+ > git clean -ffdx # timeout=10
+Fetching upstream changes from https://github.com/anshulc55/Jenkins_Upgradev3.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.39.2'
+ > git fetch --tags --force --progress --depth=1 -- https://github.com/anshulc55/Jenkins_Upgradev3.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+Checking out Revision bb8ba2453161dc640ce169b5c794d94ebb9ab318 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f bb8ba2453161dc640ce169b5c794d94ebb9ab318 # timeout=10
+Commit message: "Merge pull request #88 from AsueDerick/master"
+ > git rev-list --no-walk bb8ba2453161dc640ce169b5c794d94ebb9ab318 # timeout=10
+[java] $ /bin/sh -xe /tmp/jenkins7335387805217275445.sh
++ dotnet build ./jenkins-plugin-model/src/Pi.Web/Pi.Web.csproj
+
+Welcome to .NET 8.0!
+---------------------
+SDK Version: 8.0.301
+
+Telemetry
+---------
+The .NET tools collect usage data in order to help us improve your experience. It is collected by Microsoft and shared with the community. You can opt-out of telemetry by setting the DOTNET_CLI_TELEMETRY_OPTOUT environment variable to '1' or 'true' using your favorite shell.
+
+Read more about .NET CLI Tools telemetry: https://aka.ms/dotnet-cli-telemetry
+
+----------------
+Installed an ASP.NET Core HTTPS development certificate.
+To trust the certificate, view the instructions: https://aka.ms/dotnet-https-linux
+
+----------------
+Write your first app: https://aka.ms/dotnet-hello-world
+Find out what's new: https://aka.ms/dotnet-whats-new
+Explore documentation: https://aka.ms/dotnet-docs
+Report issues and find source on GitHub: https://github.com/dotnet/core
+Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli
+--------------------------------------------------------------------------------------
+  Determining projects to restore...
+/usr/share/dotnet/sdk/8.0.301/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.EolTargetFrameworks.targets(32,5): warning NETSDK1138: The target framework 'netcoreapp3.1' is out of support and will not receive security updates in the future. Please refer to https://aka.ms/dotnet-core-support for more information about the support policy. [/var/jenkins_home/workspace/java/jenkins-plugin-model/src/Pi.Web/Pi.Web.csproj]
+/usr/share/dotnet/sdk/8.0.301/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.EolTargetFrameworks.targets(32,5): warning NETSDK1138: The target framework 'netcoreapp3.1' is out of support and will not receive security updates in the future. Please refer to https://aka.ms/dotnet-core-support for more information about the support policy. [/var/jenkins_home/workspace/java/jenkins-plugin-model/src/Pi.Web/Pi.Web.csproj]
+  Restored /var/jenkins_home/workspace/java/jenkins-plugin-model/src/Pi.Math/Pi.Math.csproj (in 6.52 sec).
+  Restored /var/jenkins_home/workspace/java/jenkins-plugin-model/src/Pi.Runtime/Pi.Runtime.csproj (in 6.52 sec).
+  Restored /var/jenkins_home/workspace/java/jenkins-plugin-model/src/Pi.Web/Pi.Web.csproj (in 7.99 sec).
+/usr/share/dotnet/sdk/8.0.301/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.EolTargetFrameworks.targets(32,5): warning NETSDK1138: The target framework 'netcoreapp3.1' is out of support and will not receive security updates in the future. Please refer to https://aka.ms/dotnet-core-support for more information about the support policy. [/var/jenkins_home/workspace/java/jenkins-plugin-model/src/Pi.Web/Pi.Web.csproj]
+  Pi.Math -> /var/jenkins_home/workspace/java/jenkins-plugin-model/src/Pi.Math/bin/Debug/netstandard2.0/Pi.Math.dll
+  Pi.Runtime -> /var/jenkins_home/workspace/java/jenkins-plugin-model/src/Pi.Runtime/bin/Debug/netstandard2.0/Pi.Runtime.dll
+  Pi.Web -> /var/jenkins_home/workspace/java/jenkins-plugin-model/src/Pi.Web/bin/Debug/netcoreapp3.1/Pi.Web.dll
+  Pi.Web -> /var/jenkins_home/workspace/java/jenkins-plugin-model/src/Pi.Web/bin/Debug/netcoreapp3.1/Pi.Web.Views.dll
+
+Build succeeded.
+
+/usr/share/dotnet/sdk/8.0.301/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.EolTargetFrameworks.targets(32,5): warning NETSDK1138: The target framework 'netcoreapp3.1' is out of support and will not receive security updates in the future. Please refer to https://aka.ms/dotnet-core-support for more information about the support policy. [/var/jenkins_home/workspace/java/jenkins-plugin-model/src/Pi.Web/Pi.Web.csproj]
+/usr/share/dotnet/sdk/8.0.301/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.EolTargetFrameworks.targets(32,5): warning NETSDK1138: The target framework 'netcoreapp3.1' is out of support and will not receive security updates in the future. Please refer to https://aka.ms/dotnet-core-support for more information about the support policy. [/var/jenkins_home/workspace/java/jenkins-plugin-model/src/Pi.Web/Pi.Web.csproj]
+/usr/share/dotnet/sdk/8.0.301/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.EolTargetFrameworks.targets(32,5): warning NETSDK1138: The target framework 'netcoreapp3.1' is out of support and will not receive security updates in the future. Please refer to https://aka.ms/dotnet-core-support for more information about the support policy. [/var/jenkins_home/workspace/java/jenkins-plugin-model/src/Pi.Web/Pi.Web.csproj]
+    3 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:11.59
+Finished: SUCCESS

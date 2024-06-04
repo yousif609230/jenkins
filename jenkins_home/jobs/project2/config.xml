@@ -1,0 +1,100 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>10</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@5.2.2">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://github.com/anshulc55/Jenkins_Upgradev3.git</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/master</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="empty-list"/>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.CloneOption>
+        <shallow>true</shallow>
+        <noTags>false</noTags>
+        <reference></reference>
+        <depth>1</depth>
+        <honorRefspec>false</honorRefspec>
+      </hudson.plugins.git.extensions.impl.CloneOption>
+      <hudson.plugins.git.extensions.impl.CleanBeforeCheckout>
+        <deleteUntrackedNestedRepositories>true</deleteUntrackedNestedRepositories>
+      </hudson.plugins.git.extensions.impl.CleanBeforeCheckout>
+    </extensions>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>dotnet build ./jenkins-plugin-model/src/Pi.Web/Pi.Web.csproj</command>
+      <configuredLocalRules/>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>dotnet test --logger &quot;trx;LogFileName=Pi.Math.trx&quot; ./jenkins-plugin-model/src/Pi.Math.Tests/Pi.Math.Tests.csproj
+dotnet test --logger &quot;trx;LogFileName=Pi.Runtime.trx&quot; ./jenkins-plugin-model/src/Pi.Runtime.Tests/Pi.Runtime.Tests.csproj</command>
+      <configuredLocalRules/>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD</command>
+      <configuredLocalRules/>
+    </hudson.tasks.Shell>
+    <com.cloudbees.dockerpublish.DockerBuilder plugin="docker-build-publish@1.4.0">
+      <server plugin="docker-commons@439.va_3cb_0a_6a_fb_29"/>
+      <registry plugin="docker-commons@439.va_3cb_0a_6a_fb_29"/>
+      <repoName>yousif101/jenkins-demo2</repoName>
+      <noCache>false</noCache>
+      <forcePull>true</forcePull>
+      <dockerfilePath>jenkins-plugin-model/src/demo2-publish/dockerfile</dockerfilePath>
+      <skipBuild>false</skipBuild>
+      <skipDecorate>false</skipDecorate>
+      <repoTag></repoTag>
+      <skipPush>false</skipPush>
+      <createFingerprint>true</createFingerprint>
+      <skipTagLatest>false</skipTagLatest>
+      <buildAdditionalArgs></buildAdditionalArgs>
+      <forceTag>false</forceTag>
+    </com.cloudbees.dockerpublish.DockerBuilder>
+  </builders>
+  <publishers>
+    <hudson.plugins.mstest.MSTestPublisher plugin="mstest@1.0.5">
+      <testResultsFile>**/*.trx</testResultsFile>
+      <failOnError>true</failOnError>
+      <keepLongStdio>false</keepLongStdio>
+      <logLevel>INFO</logLevel>
+      <buildTime>0</buildTime>
+    </hudson.plugins.mstest.MSTestPublisher>
+  </publishers>
+  <buildWrappers>
+    <org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper plugin="credentials-binding@677.vdc9d38cb_254d">
+      <bindings>
+        <org.jenkinsci.plugins.credentialsbinding.impl.UsernamePasswordMultiBinding>
+          <credentialsId>e17d1dab-f2ce-4bd0-91a5-c1baec867ef1</credentialsId>
+          <usernameVariable>DOCKER_HUB_USER</usernameVariable>
+          <passwordVariable>DOCKER_HUB_PASSWORD</passwordVariable>
+        </org.jenkinsci.plugins.credentialsbinding.impl.UsernamePasswordMultiBinding>
+      </bindings>
+    </org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper>
+  </buildWrappers>
+</project>

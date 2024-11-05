@@ -22,19 +22,19 @@ pipeline {
                                 choice(name: 'REVISION', choices: revisions, description: 'Select the revision number')
                             ]
                         )
-                        env.CHOOSED_REVISION = revision
+                        env.LAST_REVISION_BEFORE_LAST = revision
                     } else {
-                        def lastRevision = output.tokenize('\n')[-2].split()[0]
-                        env.CHOOSED_REVISION = lastRevision
+                        def lastRevisionBeforeLast = output.tokenize('\n')[-2].split()[0]
+                        env.LAST_REVISION_BEFORE_LAST = lastRevisionBeforeLast
                     }
-                    echo "Revision that been choosen: ${env.CHOOSED_REVISION}"
+                    echo "Last revision before last: ${env.LAST_REVISION_BEFORE_LAST}"
                 }
             }
         }
         stage("rollback") {
             steps {
                 script {
-                    sh "helm rollback ${params.HELM_CHART} ${env.CHOOSED_REVISION}"
+                    sh "helm rollback ${params.HELM_CHART} ${env.LAST_REVISION_BEFORE_LAST}"
                 }
             }
         }

@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+    environment {
+        KUBECONFIG = '/home/admin/.kube/admin.conf'
+    }
+    parameters {
+        choice(name: 'HELM_CHART', choices: ['my-nginx', 'chart2', 'chart3'], description: 'Select the Helm chart')
+        booleanParam(name: 'AUTOMATIC_ROLLBACK', defaultValue: false, description: 'Automatically rollback to previous revision')
+    }
+    stages {
+        stage("helm history") {
+            steps {
+                script {
+                    def helmChart = params.HELM_CHART
+                    sh "helm history ${helmChart}"
+                    def output = sh(script: "helm history ${helmChart}", returnStdout: true).trim()
+                    def revisions = output.tokenize('\n').collect { it.split()[0] }
+                    if (!params.AUTOMATIC_ROLLBACK) {
+                        def revision = input(
+                            message: 'Select the revision number',
+                            parameters: [
+                                choice(name: 'REVISION', choices: revisions, description: 'Select the revision number')
+                            ]
+                        )
+                        env.CHOOSED_REVISION = revision
+                    } else {
+                        def lastRevision = output.tokenize('\n')[-2].split()[0]
+                        env.CHOOSED_REVISION = lastRevision
+                    }
+                    echo "Revision that been choosen: ${env.CHOOSED_REVISION}"
+                }
+            }
+        }
+        stage("rollback") {
+            steps {
+                script {
+                    sh "helm rollback ${params.HELM_CHART} ${env.CHOOSED_REVISION}"
+                }
+            }
+        }
+    }
+}

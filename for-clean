@@ -1,0 +1,161 @@
+@Library('gph-neo-jenkins-library') _
+
+pipeline {
+    agent any
+    parameters {
+        choice(
+            name: 'ENV',
+            choices: ['dev', 'uat', 'prod'],
+            description: 'Choose the target environment'
+        )
+        string(name: 'InstanceID', defaultValue: '', description: 'EC2 Instance ID (optional)', trim: true)
+        choice(name: 'SSM', choices: ['Skip','Install or Upgrade','Install (Skip If Installed)'], description: 'AWSCLI')
+        choice(name: 'CloudWatch', choices: ['Skip', 'Install or Upgrade', 'Install (Skip If Installed)'], description: 'CloudWatch')
+        choice(name: 'Symantec', choices: ['Skip', 'Install or Upgrade', 'Install (Skip If Installed)'], description: 'Symantec')
+        choice(name: 'Tripwire', choices: ['Skip', 'Install or Upgrade', 'Install (Skip If Installed)'], description: 'Tripwire')
+        choice(name: 'Nessus', choices: ['Skip','Install or Upgrade', 'Install (Skip If Installed)'], description: 'Nessus')
+        choice(name: 'Taegis', choices: ['Skip', 'Install or Upgrade', 'Install (Skip If Installed)'], description: 'Taegis')
+        string(name: 'TaegisRegKey', defaultValue: '', description: 'Taegis Registration Key', trim: true)
+        string(name: 'TIMEOUT', defaultValue: '15', description: 'Timeout duration', trim: true)
+    }
+    options {
+        timeout(time: params.TIMEOUT, unit: 'MINUTES')
+        buildDiscarder logRotator(numToKeepStr: '10')
+    }
+    environment {
+        PROJECT_ENV = 'projects/install-machine-agents/env.properties'
+        AWS_ROLE_ACCOUNT = "${AwsRoleAndAccount(params.ENV)?.ACCOUNT}"
+        AWS_ROLE = "${AwsRoleAndAccount(params.ENV)?.ROLE}"
+        JENKINS_CRED = credentials('jenkins-service')
+        JOB_NAME = JOB_NAME.split('/').last()
+    }
+    stages {
+        stage('Load Env Variables') {
+            steps { 
+                script { loadEnvVars(PROJECT_ENV) } 
+            }
+        }
+
+        stage('Get EC2 Instances') {
+            steps {
+                script {
+                    withAWS(roleAccount: env.AWS_ROLE_ACCOUNT, role: env.AWS_ROLE) {
+                        echo "Fetching EC2 instances..."
+                        sh """
+                           aws ec2 describe-instances --query "Reservations[*].Instances[*].[InstanceId, Tags[?Key=='Name'].Value | [0], PrivateIpAddress]" --output table
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Choose EC2') {
+            when {
+                expression { return params.InstanceID == '' }
+            }
+            steps {
+                script {
+                    def userInput = input(
+                        id: 'userInput', message: 'Select the EC2 instance ID',
+                        parameters: [
+                            string(defaultValue: '', description: 'EC2 Instance ID', name: 'EC2_ID')
+                        ])
+                    env.SELECTED_EC2 = userInput
+                }
+            }
+        }
+        
+        stage('Validation') {
+            steps {
+                script { ProductionValidation() }
+            }
+        }
+
+        stage('Execute Automation') {
+            steps {
+                script {
+                    def selectedInstanceId = params.InstanceID ? params.InstanceID : env.SELECTED_EC2
+                    echo "Using EC2 instance ID: ${selectedInstanceId}"
+                    def documentName = params.ENV == 'dev' ? "Install-Machine-Agents" : "arn:aws:ssm:eu-west-1:132405888043:document/Install-Machine-Agents"
+                    echo "Document Name: ${documentName}"
+                    def commandParameters = [
+                        "InstanceId": [selectedInstanceId],
+                        "AWSCLI": ["Install and Use v2"],
+                        "SSM": [params.SSM],
+                        "CloudWatch": [params.CloudWatch],
+                        "Symantec": [params.Symantec],
+                        "Tripwire": [params.Tripwire],
+                        "Nessus": [params.Nessus],
+                        "Taegis": [params.Taegis]
+                    ]
+                    if (params.TaegisRegKey != '') {
+                        commandParameters["TaegisRegKey"] = [params.TaegisRegKey]
+                    }
+                    def jsonString = groovy.json.JsonOutput.toJson(commandParameters)
+                    def executionId
+
+                    withAWS(roleAccount: env.AWS_ROLE_ACCOUNT, role: env.AWS_ROLE) {
+                        echo "Starting SSM Automation Execution..."
+                        executionId = sh (
+                            script: """
+                                aws ssm start-automation-execution \
+                                --document-name "${documentName}" \
+                                --parameters '${jsonString}' \
+                                --region eu-west-1 \
+                                --query "AutomationExecutionId" \
+                                --output text
+                            """,
+                            returnStdout: true
+                        ).trim()
+                        echo "Automation Execution ID: ${executionId}"
+                    
+                        def isRunning = true
+                        while (isRunning) {
+                            sleep(time: 4, unit: 'SECONDS')
+                            def status = sh (
+                                script: """
+                                    aws ssm get-automation-execution \
+                                    --automation-execution-id "${executionId}" \
+                                    --query "AutomationExecution.AutomationExecutionStatus" \
+                                    --output text \
+                                    --region eu-west-1
+                                """,
+                                returnStdout: true
+                            ).trim()
+                            echo "Current Status: ${status}"
+                            
+                            if (status == 'InProgress') {
+                                def detailedSteps = sh (
+                                    script: """
+                                        aws ssm get-automation-execution \
+                                        --automation-execution-id "${executionId}" \
+                                        --query "AutomationExecution.StepExecutions[*].[StepExecutionId,StepNumber,StepName,Action,StepStatus,StartTime,EndTime]" \
+                                        --output table \
+                                        --region eu-west-1
+                                    """,
+                                    returnStdout: true
+                                ).trim()
+                                echo "Step Details:\n${detailedSteps}"
+                            }
+                        
+                            if (status == 'Success' || status == 'Failed') {
+                                if (status == 'Failed') {
+                                    error "SSM Document execution failed."
+                                }
+                                isRunning = false
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    // post {
+    //     always {
+    //         script {
+    //             s3LogsUploader()
+    //             //sendEmailNotification("${EMAIL_TO}","${EMAIL_FROM}")
+    //         }
+    //     }
+    // }
+}

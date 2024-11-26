@@ -1,8 +1,10 @@
 import csv
 import json
 import sys
+import os
+import math
 
-def convert_csv_to_json(csv_file_path, output_json_path):
+def convert_csv_to_json(csv_file_path, output_json_base):
     # List to store the data
     data = []
     
@@ -20,11 +22,26 @@ def convert_csv_to_json(csv_file_path, output_json_path):
                 }
                 data.append(filtered_row)
         
-        # Write to JSON file
-        with open(output_json_path, 'w') as json_file:
-            json.dump(data, json_file, indent=4)
+        # Calculate number of files needed (50 records per file)
+        records_per_file = 50
+        total_files = math.ceil(len(data) / records_per_file)
+        
+        # Split data into chunks and write to separate files
+        for i in range(total_files):
+            start_idx = i * records_per_file
+            end_idx = min((i + 1) * records_per_file, len(data))
+            chunk_data = data[start_idx:end_idx]
             
-        print(f"Successfully converted CSV to JSON. Output saved to {output_json_path}")
+            # Generate output filename with index
+            file_name = f"{output_json_base}_{i+1}.json"
+            
+            # Write chunk to JSON file
+            with open(file_name, 'w') as json_file:
+                json.dump(chunk_data, json_file, indent=4)
+            
+            print(f"Created file {file_name} with {len(chunk_data)} records")
+            
+        print(f"\nSuccessfully split data into {total_files} files with {records_per_file} records each")
         
     except FileNotFoundError:
         print(f"Error: The file {csv_file_path} was not found.")
@@ -35,8 +52,10 @@ def convert_csv_to_json(csv_file_path, output_json_path):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: python csv_to_json_converter.py input.csv output.json")
+        print("Usage: python csv_to_json_converter.py input.csv output_base")
+        print("Example: python csv_to_json_converter.py data.csv output")
+        print("This will create files like output_1.json, output_2.json, etc.")
     else:
         input_csv = sys.argv[1]
-        output_json = sys.argv[2]
-        convert_csv_to_json(input_csv, output_json)
+        output_base = sys.argv[2]
+        convert_csv_to_json(input_csv, output_base)

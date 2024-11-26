@@ -35,9 +35,9 @@ def convert_csv_to_json(csv_file_path, output_json_base):
             # Generate output filename with index
             file_name = f"{output_json_base}_{i+1}.json"
             
-            # Write chunk to JSON file
+            # Write chunk to JSON file without indentation (single line)
             with open(file_name, 'w') as json_file:
-                json.dump(chunk_data, json_file, indent=4)
+                json.dump(chunk_data, json_file, separators=(',', ':'))
             
             print(f"Created file {file_name} with {len(chunk_data)} records")
             

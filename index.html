@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ila URL Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://www.bank-abc.com/en/Retail/Retails/ila.jpg" alt="ila bank logo" class="logo">
+            <h1>URL Generator</h1>
+        </div>
+        
+        <div class="form-container">
+            <div class="option-selector">
+                <label for="action">Select Action:</label>
+                <select id="action" onchange="updateInputFields()">
+                    <option value="">Choose an option...</option>
+                    <option value="change-email">Change Email</option>
+                    <option value="delete-ping-id">Delete Ping ID</option>
+                    <option value="change-default-unit-id">Change Default Unit ID</option>
+                    <option value="update-credit-card-hold-reference">Update Credit Card Hold Reference</option>
+                </select>
+            </div>
+
+            <div id="inputFields" class="input-fields">
+                <!-- Dynamic input fields will be added here -->
+            </div>
+
+            <div class="buttons">
+                <button onclick="generateURL()" class="generate-btn">Generate URL</button>
+                <button onclick="copyURL()" class="copy-btn" id="copyBtn" style="display: none;">Copy URL</button>
+            </div>
+        </div>
+
+        <div class="result">
+            <p>Generated URL:</p>
+            <div id="generatedURL" class="url-display"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

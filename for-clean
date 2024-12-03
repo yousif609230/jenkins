@@ -104,7 +104,7 @@ pipeline {
             steps {
                 script {
                     // Show verification input with deployment details
-                    def userInput = input(
+                    def confirmation = input(
                         message: """
                            ====== Verify Deployment Restart ======
                            Namespace: ${env.SELECTED_NAMESPACE}
@@ -123,7 +123,7 @@ pipeline {
                         ]
                     )
                     
-                    if (userInput.CONFIRMATION.toLowerCase() != 'confirm') {
+                    if (confirmation['CONFIRMATION'].toLowerCase() != 'confirm') {
                         error("Deployment restart cancelled: Confirmation text did not match 'confirm'")
                     }
                     

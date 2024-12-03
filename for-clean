@@ -8,8 +8,6 @@ pipeline {
             choices: ['dev', 'uat', 'prod'],
             description: 'Choose the target environment'
         )
-        choice(name: 'HELM_CHART', choices: ['my-nginx', 'chart2', 'chart3'], description: 'Select the Helm chart')
-        booleanParam(name: 'AUTOMATIC_ROLLBACK', defaultValue: false, description: 'Automatically rollback to previous revision')
         string(name: 'TIMEOUT', defaultValue: '15', description: 'Timeout duration', trim: true)
     }
     options {
@@ -17,7 +15,6 @@ pipeline {
         buildDiscarder logRotator(numToKeepStr: '10')
     }
     environment {
-        PROJECT_ENV = 'projects/rollback-service/env.properties'
         AWS_ROLE_ACCOUNT = "${AwsRoleAndAccount(params.ENV)?.ACCOUNT}"
         AWS_ROLE = "${AwsRoleAndAccount(params.ENV)?.ROLE}"
         JENKINS_CRED = credentials('jenkins-service')
@@ -26,68 +23,41 @@ pipeline {
 
     }
     stages {
-        stage('Load Env Variables') {
-            steps {script {loadEnvVars(PROJECT_ENV)}}
-        }
-        stage('Validation') {
-                   steps {script {ProductionValidation()}}
-               }
-        stage("helm history") {
+        stage('List Kubernetes Deployments') {
             steps {
                 script {
+                    // Authenticate with AWS and configure kubectl
                     withAWS(roleAccount: env.AWS_ROLE_ACCOUNT, role: env.AWS_ROLE) {
-                    def helmChart = params.HELM_CHART
-                    sh "helm history ${helmChart}"
-                    def output = sh(script: "helm history ${helmChart}", returnStdout: true).trim()
-                    def revisions = output.tokenize('\n').collect { it.split()[0] }
-                    if (!params.AUTOMATIC_ROLLBACK) {
-                        def revision = input(
-                            message: "Select the revision for ${params.HELM_CHART}",
-                            parameters: [
-                                choice(name: 'REVISION', choices: revisions, description: "Select the revision number ")
-                            ]
-                        )
-                        env.CHOOSED_REVISION = revision
-                    } else {
-                        def lastRevision = output.tokenize('\n')[-2].split()[0]
-                        env.CHOOSED_REVISION = lastRevision
+                    // Get all deployments across all namespaces and store in a variable
+                    def deployments = sh(
+                        script: "kubectl get deployments --all-namespaces -o custom-columns='NAMESPACE:.metadata.namespace,NAME:.metadata.name' --no-headers",
+                        returnStdout: true
+                    ).trim()
+                    
+                    // Parse the output and create a map of namespace to deployments
+                    def deploymentMap = [:]
+                    deployments.split('\n').each { line ->
+                        def (namespace, deploymentName) = line.split()
+                        if (!deploymentMap[namespace]) {
+                            deploymentMap[namespace] = []
+                        }
+                        deploymentMap[namespace] << deploymentName
                     }
-                    echo "Revision That Been Choosen: ${env.CHOOSED_REVISION}"
+                    
+                    // Store the deployment map for later use
+                    env.DEPLOYMENT_MAP = groovy.json.JsonOutput.toJson(deploymentMap)
+                    
+                    // Print the found deployments for verification
+                    echo "Found deployments by namespace:"
+                    deploymentMap.each { namespace, deps ->
+                        echo "Namespace: ${namespace}"
+                        deps.each { dep ->
+                            echo "  - ${dep}"
+                        }
                     }
-                }
-            }
-        }
-        stage("rollback") {
-            steps {
-                script {
-                    sh "helm rollback ${params.HELM_CHART} ${env.CHOOSED_REVISION}"
+                 }
                 }
             }
         }
     }
-    // post {
-    //     always {
-    //         script {
-    //             s3LogsUploader()
-    //             //sendEmailNotification("${EMAIL_TO}","${EMAIL_FROM}")
-    //         }
-    //     }
-    // }
 }
-
-//this to be addded later after "rollback" stage , this stage will varify if all pods are ready 1/1 it will SUCESS the pipeline job 
-        // stage('Verify Pods') {
-        //     steps {
-        //         script {
-        //             def helmChart = params.HELM_CHART
-        //             timeout(time: 10, unit: 'MINUTES') { // Timeout after 10 minutes
-        //                 waitUntil {
-        //                     def podStatus = sh(script: "kubectl get pods -l 'app.kubernetes.io/name=${helmChart}' -o jsonpath='{range .items[*]}{.metadata.name}{\" \"}{range .status.containerStatuses[*]}{.ready}{\"\\n\"}{end}{end}'", returnStdout: true).trim()
-        //                     echo "Pod Status: ${podStatus}"
-        //                     return !podStatus.contains("false")
-        //                 }
-        //             }
-        //             echo "All Pods are running with status 1/1"
-        //         }
-        //     }
-        // }

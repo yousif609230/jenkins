@@ -71,12 +71,22 @@ pipeline {
                     // Parse the deployment map back from JSON
                     def deploymentMap = readJSON text: env.DEPLOYMENT_MAP
                     
+                    // Define excluded namespaces
+                    def excludedNamespaces = ['kube-system', 'argocd']
+                    
                     // Create a list of deployment choices in format "namespace/deployment"
                     def deploymentChoices = []
                     deploymentMap.each { namespace, deps ->
-                        deps.each { deployment ->
-                            deploymentChoices << "${namespace}/${deployment}"
+                        // Skip excluded namespaces
+                        if (!excludedNamespaces.contains(namespace)) {
+                            deps.each { deployment ->
+                                deploymentChoices << "${namespace}/${deployment}"
+                            }
                         }
+                    }
+                    
+                    if (deploymentChoices.isEmpty()) {
+                        error("No deployments found in allowed namespaces.")
                     }
                     
                     // Show input dialog with deployment choices

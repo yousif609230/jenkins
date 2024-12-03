@@ -65,7 +65,7 @@ pipeline {
                 }
             }
         }
-        stage('Select and Restart Deployment') {
+        stage('Select Deployment') {
             steps {
                 script {
                     // Parse the deployment map back from JSON
@@ -82,7 +82,7 @@ pipeline {
                     // Show input dialog with deployment choices
                     def selectedDeployment = input(
                         message: 'Select Deployment to Restart',
-                        ok: 'Restart',
+                        ok: 'Select',
                         parameters: [
                             choice(
                                 name: 'DEPLOYMENT_CHOICE',
@@ -92,28 +92,65 @@ pipeline {
                         ]
                     )
                     
-                    // Split the selected value back into namespace and deployment name
+                    // Store the selection in environment variables for next stages
                     def (namespace, deploymentName) = selectedDeployment.split('/')
+                    env.SELECTED_NAMESPACE = namespace
+                    env.SELECTED_DEPLOYMENT = deploymentName
+                }
+            }
+        }
+        
+        stage('Verify Deployment') {
+            steps {
+                script {
+                    echo """
+                    ====== Selected Deployment Details ======
+                    Namespace: ${env.SELECTED_NAMESPACE}
+                    Deployment: ${env.SELECTED_DEPLOYMENT}
+                    Environment: ${params.ENV}
+                    ======================================="""
                     
+                    def userInput = input(
+                        message: """Please verify the deployment details above.
+                        Type 'confirm' to proceed with the restart.""",
+                        parameters: [
+                            string(
+                                defaultValue: '',
+                                name: 'CONFIRMATION',
+                                description: "Type 'confirm' to proceed with the restart"
+                            )
+                        ]
+                    )
+                    
+                    if (userInput.CONFIRMATION.toLowerCase() != 'confirm') {
+                        error("Deployment restart cancelled: Confirmation text did not match 'confirm'")
+                    }
+                }
+            }
+        }
+        
+        stage('Restart Deployment') {
+            steps {
+                script {
                     echo """
                     ====== Restarting Deployment ======
-                    Namespace: ${namespace}
-                    Deployment: ${deploymentName}
+                    Namespace: ${env.SELECTED_NAMESPACE}
+                    Deployment: ${env.SELECTED_DEPLOYMENT}
                     ================================"""
                     
                     // Restart the deployment
                     withAWS(roleAccount: env.AWS_ROLE_ACCOUNT, role: env.AWS_ROLE) {
                         sh """
-                            kubectl rollout restart deployment/${deploymentName} -n ${namespace}
+                            kubectl rollout restart deployment/${env.SELECTED_DEPLOYMENT} -n ${env.SELECTED_NAMESPACE}
                             echo "Waiting for rollout to complete..."
-                            kubectl rollout status deployment/${deploymentName} -n ${namespace} --timeout=${params.TIMEOUT}m
+                            kubectl rollout status deployment/${env.SELECTED_DEPLOYMENT} -n ${env.SELECTED_NAMESPACE} --timeout=${params.TIMEOUT}m
                         """
                     }
                     
-                         echo """
-                      ====== Deployment Restart Complete ======
-                      The deployment ${deploymentName} in namespace ${namespace} has been successfully restarted
-                      ========================================"""
+                    echo """
+                    ====== Deployment Restart Complete ======
+                    The deployment ${env.SELECTED_DEPLOYMENT} in namespace ${env.SELECTED_NAMESPACE} has been successfully restarted
+                    ========================================"""
                 }
             }
         }

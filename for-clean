@@ -47,14 +47,20 @@ pipeline {
                     // Store the deployment map for later use
                     env.DEPLOYMENT_MAP = groovy.json.JsonOutput.toJson(deploymentMap)
                     
-                    // Print the found deployments for verification
-                    echo "Found deployments by namespace:"
+                    // Print the found deployments in a more organized format
+                    echo "==================== Kubernetes Deployments Summary ===================="
+                    echo "\nTotal namespaces found: ${deploymentMap.size()}\n"
+                    
                     deploymentMap.each { namespace, deps ->
-                        echo "Namespace: ${namespace}"
+                        echo "📁 Namespace: ${namespace}"
+                        echo "   Total deployments: ${deps.size()}"
+                        echo "   Deployments:"
                         deps.each { dep ->
-                            echo "  - ${dep}"
+                            echo "   └─ ${dep}"
                         }
+                        echo "----------------------------------------------------------------"
                     }
+                    echo "\n================================================================"
                  }
                 }
             }

@@ -65,5 +65,57 @@ pipeline {
                 }
             }
         }
+        stage('Select and Restart Deployment') {
+            steps {
+                script {
+                    // Parse the deployment map back from JSON
+                    def deploymentMap = readJSON text: env.DEPLOYMENT_MAP
+                    
+                    // Create a list of deployment choices in format "namespace/deployment"
+                    def deploymentChoices = []
+                    deploymentMap.each { namespace, deps ->
+                        deps.each { deployment ->
+                            deploymentChoices << "${namespace}/${deployment}"
+                        }
+                    }
+                    
+                    // Show input dialog with deployment choices
+                    def selectedDeployment = input(
+                        message: 'Select Deployment to Restart',
+                        ok: 'Restart',
+                        parameters: [
+                            choice(
+                                name: 'DEPLOYMENT_CHOICE',
+                                choices: deploymentChoices,
+                                description: 'Select the deployment to restart'
+                            )
+                        ]
+                    )
+                    
+                    // Split the selected value back into namespace and deployment name
+                    def (namespace, deploymentName) = selectedDeployment.split('/')
+                    
+                    echo """
+                    ====== Restarting Deployment ======
+                    Namespace: ${namespace}
+                    Deployment: ${deploymentName}
+                    ================================"""
+                    
+                    // Restart the deployment
+                    withAWS(roleAccount: env.AWS_ROLE_ACCOUNT, role: env.AWS_ROLE) {
+                        sh """
+                            kubectl rollout restart deployment/${deploymentName} -n ${namespace}
+                            echo "Waiting for rollout to complete..."
+                            kubectl rollout status deployment/${deploymentName} -n ${namespace} --timeout=${params.TIMEOUT}m
+                        """
+                    }
+                    
+                         echo """
+                      ====== Deployment Restart Complete ======
+                      The deployment ${deploymentName} in namespace ${namespace} has been successfully restarted
+                      ========================================"""
+                }
+            }
+        }
     }
 }

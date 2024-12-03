@@ -1,4 +1,100 @@
-Pipeline] echo
+Pipeline] {
+[Pipeline] sh (show)
+[Pipeline] echo
+==================== Kubernetes Deployments Summary ====================
+[Pipeline] echo
+
+Total namespaces found: 7
+
+[Pipeline] echo
+📁 Namespace: account-service-ns
+[Pipeline] echo
+   Total deployments: 1
+[Pipeline] echo
+   Deployments:
+[Pipeline] echo
+   └─ account-service
+[Pipeline] echo
+----------------------------------------------------------------
+[Pipeline] echo
+📁 Namespace: argocd
+[Pipeline] echo
+   Total deployments: 7
+[Pipeline] echo
+   Deployments:
+[Pipeline] echo
+   └─ argocd-applicationset-controller
+[Pipeline] echo
+   └─ argocd-dex-server
+[Pipeline] echo
+   └─ argocd-image-updater
+[Pipeline] echo
+   └─ argocd-notifications-controller
+[Pipeline] echo
+   └─ argocd-redis
+[Pipeline] echo
+   └─ argocd-repo-server
+[Pipeline] echo
+   └─ argocd-server
+[Pipeline] echo
+----------------------------------------------------------------
+[Pipeline] echo
+📁 Namespace: credit-card-service-ns
+[Pipeline] echo
+   Total deployments: 1
+[Pipeline] echo
+   Deployments:
+[Pipeline] echo
+   └─ credit-card-service
+[Pipeline] echo
+----------------------------------------------------------------
+[Pipeline] echo
+📁 Namespace: cusomers-service-ns
+[Pipeline] echo
+   Total deployments: 1
+[Pipeline] echo
+   Deployments:
+[Pipeline] echo
+   └─ cusomers-service
+[Pipeline] echo
+----------------------------------------------------------------
+[Pipeline] echo
+📁 Namespace: default
+[Pipeline] echo
+   Total deployments: 1
+[Pipeline] echo
+   Deployments:
+[Pipeline] echo
+   └─ my-nginx
+[Pipeline] echo
+----------------------------------------------------------------
+[Pipeline] echo
+📁 Namespace: kube-system
+[Pipeline] echo
+   Total deployments: 4
+[Pipeline] echo
+   Deployments:
+[Pipeline] echo
+   └─ coredns
+[Pipeline] echo
+   └─ local-path-provisioner
+[Pipeline] echo
+   └─ metrics-server
+[Pipeline] echo
+   └─ traefik
+[Pipeline] echo
+----------------------------------------------------------------
+[Pipeline] echo
+📁 Namespace: sales-service-ns
+[Pipeline] echo
+   Total deployments: 1
+[Pipeline] echo
+   Deployments:
+[Pipeline] echo
+   └─ sales-service
+[Pipeline] echo
+----------------------------------------------------------------
+[Pipeline] echo
 
 ================================================================
 [Pipeline] }
@@ -47,15 +143,21 @@ Stage "Restart Deployment" skipped due to earlier failure(s)
 [Pipeline] }
 [Pipeline] // node
 [Pipeline] End of Pipeline
-Also:   org.jenkinsci.plugins.workflow.actions.ErrorAction$ErrorId: cf54668e-40c6-45a6-b8fe-025c2da60aaf
-groovy.lang.MissingPropertyException: No such field found: field java.lang.String CONFIRMATION
-	at PluginClassLoader for script-security//org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SandboxInterceptor.unclassifiedField(SandboxInterceptor.java:402)
-	at PluginClassLoader for script-security//org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SandboxInterceptor.onGetProperty(SandboxInterceptor.java:386)
-	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker$7.call(Checker.java:375)
-	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker.checkedGetProperty(Checker.java:379)
-	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.sandbox.SandboxInvoker.getProperty(SandboxInvoker.java:29)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.LoggingInvoker.getProperty(LoggingInvoker.java:133)
-	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.PropertyAccessBlock.rawGet(PropertyAccessBlock.java:20)
+Also:   org.jenkinsci.plugins.workflow.actions.ErrorAction$ErrorId: 7c50997b-942f-4ab5-98e8-4108d2325489
+groovy.lang.MissingPropertyException: No such property: CONFIRMATION for class: java.lang.String
+	at org.codehaus.groovy.runtime.ScriptBytecodeAdapter.unwrap(ScriptBytecodeAdapter.java:66)
+	at org.codehaus.groovy.runtime.callsite.PojoMetaClassSite.call(PojoMetaClassSite.java:48)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:116)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:128)
+	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker$11.call(Checker.java:512)
+	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.GroovyInterceptor.onGetArray(GroovyInterceptor.java:124)
+	at PluginClassLoader for script-security//org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SandboxInterceptor.onGetArray(SandboxInterceptor.java:476)
+	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker$11.call(Checker.java:509)
+	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker.checkedGetArray(Checker.java:514)
+	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.sandbox.SandboxInvoker.getArray(SandboxInvoker.java:45)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.LoggingInvoker.getArray(LoggingInvoker.java:155)
+	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.ArrayAccessBlock.rawGet(ArrayAccessBlock.java:21)
 	at WorkflowScript.run(WorkflowScript:126)
 	at ___cps.transform___(Native Method)
 	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.PropertyishBlock$ContinuationImpl.get(PropertyishBlock.java:73)

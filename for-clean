@@ -114,6 +114,7 @@ pipeline {
                            Type 'confirm' below to restart this deployment
                            =======================================
                            """,
+                        ok: 'Proceed',
                         parameters: [
                             string(
                                 defaultValue: '',
@@ -123,7 +124,7 @@ pipeline {
                         ]
                     )
                     
-                    if (confirmation['CONFIRMATION'].toLowerCase() != 'confirm') {
+                    if (!confirmation.equals('confirm')) {
                         error("Deployment restart cancelled: Confirmation text did not match 'confirm'")
                     }
                     

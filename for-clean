@@ -80,7 +80,7 @@ pipeline {
                     }
                     
                     // Show input dialog with deployment choices
-                    def selectedDeployment = input(
+                    env.SELECTED_DEPLOYMENT_FULL = input(
                         message: 'Select Deployment to Restart',
                         ok: 'Select',
                         parameters: [
@@ -90,12 +90,12 @@ pipeline {
                                 description: 'Select the deployment to restart'
                             )
                         ]
-                    )
+                    ).trim()
                     
                     // Store the selection in environment variables for next stages
-                    def (namespace, deploymentName) = selectedDeployment.split('/')
-                    env.SELECTED_NAMESPACE = namespace
-                    env.SELECTED_DEPLOYMENT = deploymentName
+                    def parts = env.SELECTED_DEPLOYMENT_FULL.split('/')
+                    env.SELECTED_NAMESPACE = parts[0]
+                    env.SELECTED_DEPLOYMENT = parts[1]
                 }
             }
         }
@@ -103,21 +103,22 @@ pipeline {
         stage('Verify Deployment') {
             steps {
                 script {
-                    echo """
-                    ====== Selected Deployment Details ======
-                    Namespace: ${env.SELECTED_NAMESPACE}
-                    Deployment: ${env.SELECTED_DEPLOYMENT}
-                    Environment: ${params.ENV}
-                    ======================================="""
-                    
+                    // Show verification input with deployment details
                     def userInput = input(
-                        message: """Please verify the deployment details above.
-                        Type 'confirm' to proceed with the restart.""",
+                        message: """
+                           ====== Verify Deployment Restart ======
+                           Namespace: ${env.SELECTED_NAMESPACE}
+                           Deployment: ${env.SELECTED_DEPLOYMENT}
+                           Environment: ${params.ENV}
+                           
+                           Type 'confirm' below to restart this deployment
+                           =======================================
+                           """,
                         parameters: [
                             string(
                                 defaultValue: '',
                                 name: 'CONFIRMATION',
-                                description: "Type 'confirm' to proceed with the restart"
+                                description: "Type 'confirm' to restart deployment: ${env.SELECTED_DEPLOYMENT} in namespace: ${env.SELECTED_NAMESPACE}"
                             )
                         ]
                     )
@@ -125,6 +126,13 @@ pipeline {
                     if (userInput.CONFIRMATION.toLowerCase() != 'confirm') {
                         error("Deployment restart cancelled: Confirmation text did not match 'confirm'")
                     }
+                    
+                    echo """
+                    ====== Deployment Verified ======
+                    Proceeding to restart:
+                    Namespace: ${env.SELECTED_NAMESPACE}
+                    Deployment: ${env.SELECTED_DEPLOYMENT}
+                    ================================"""
                 }
             }
         }

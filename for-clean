@@ -7,27 +7,44 @@ def monitorPodStatus(namespace, deploymentName) {
     def maxAttempts = params.TIMEOUT.toInteger() * 12  // Convert minutes to 5-second intervals (12 checks per minute)
     
     while (!stable && attempts < maxAttempts) {
+        // Get deployment's selector labels
+        def deploymentJson = sh(
+            script: """
+                kubectl get deployment ${deploymentName} -n ${namespace} -o json
+            """,
+            returnStdout: true
+        ).trim()
+        
+        def deployment = readJSON text: deploymentJson
+        def selectorLabels = deployment.spec.selector.matchLabels.collect { k,v -> "${k}=${v}" }.join(',')
+        
         def podStatus = sh(
-            script: "kubectl get pods -n ${namespace} -l app=${deploymentName} -o wide",
+            script: "kubectl get pods -n ${namespace} -l ${selectorLabels} -o wide",
             returnStdout: true
         ).trim()
         
         echo "📊 Current Pod Status (Attempt ${attempts + 1}/${maxAttempts}):"
         echo podStatus
         
-        // Check if all pods are running and ready
-        def allPodsReady = sh(
+        // Check if pods exist and all containers are ready
+        def podsJson = sh(
             script: """
-                kubectl get pods -n ${namespace} -l app=${deploymentName} -o json | \
-                jq -r '.items[] | select(.status.phase=="Running") | .status.containerStatuses[].ready' | \
-                grep -v false || true
+                kubectl get pods -n ${namespace} -l ${selectorLabels} -o json
             """,
             returnStdout: true
         ).trim()
         
-        if (allPodsReady) {
-            stable = true
-            echo "✅ All pods are running and ready for deployment ${deploymentName}"
+        def pods = readJSON text: podsJson
+        if (pods.items.size() > 0) {
+            stable = pods.items.every { pod ->
+                pod.status.containerStatuses.every { container ->
+                    container.ready
+                }
+            }
+        }
+        
+        if (stable) {
+            echo "✅ All pods are ready (1/1) for deployment ${deploymentName}"
         } else {
             echo "⏳ Waiting for pods to stabilize... (checking again in 5 seconds)"
             sleep 5

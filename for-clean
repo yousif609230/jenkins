@@ -201,18 +201,16 @@ pipeline {
                     withAWS(roleAccount: env.AWS_ROLE_ACCOUNT, role: env.AWS_ROLE) {
                         sh """
                             kubectl rollout restart deployment/${env.SELECTED_DEPLOYMENT} -n ${env.SELECTED_NAMESPACE}
-                            echo "Waiting for rollout to complete..."
-                            kubectl rollout status deployment/${env.SELECTED_DEPLOYMENT} -n ${env.SELECTED_NAMESPACE} --timeout=${params.TIMEOUT}m
                         """
                     }
+                    
+                    // Monitor the deployment status
+                    monitorPodStatus(env.SELECTED_NAMESPACE, env.SELECTED_DEPLOYMENT)
                     
                     echo """
                     ====== Deployment Restart Complete ======
                     The deployment ${env.SELECTED_DEPLOYMENT} in namespace ${env.SELECTED_NAMESPACE} has been successfully restarted
                     ========================================"""
-                    
-                    // Monitor the pod status after restart
-                    monitorPodStatus(env.SELECTED_NAMESPACE, env.SELECTED_DEPLOYMENT)
                 }
             }
         }

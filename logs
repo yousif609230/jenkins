@@ -1,25 +1,23 @@
-Started by user GPH-Neo DevOps
-Obtained projects/restart-service/Jenkinsfile from git https://github.com/BankABC/gph-neo-jenkins.git
-org.codehaus.groovy.control.MultipleCompilationErrorsException: startup failed:
-WorkflowScript: 174: Method definition not expected here. Please define the method at an appropriate place or perhaps try using a block/Closure instead. at line: 174 column: 21. File: WorkflowScript @ line 174, column 21.
-                       def monitorPodStatus(namespace, deploymentName) {
-                       ^
+Sleeping for 5 sec
+[Pipeline] sh
++ kubectl get pods -n account-service-ns -l app=account-service -o wide
+No resources found in account-service-ns namespace.
+[Pipeline] echo
+📊 Current Pod Status (Attempt 12/180):
+[Pipeline] echo
 
-1 error
-
-	at org.codehaus.groovy.control.ErrorCollector.failIfErrors(ErrorCollector.java:309)
-	at org.codehaus.groovy.control.CompilationUnit.applyToSourceUnits(CompilationUnit.java:981)
-	at org.codehaus.groovy.control.CompilationUnit.doPhaseOperation(CompilationUnit.java:626)
-	at org.codehaus.groovy.control.CompilationUnit.processPhaseOperations(CompilationUnit.java:602)
-	at org.codehaus.groovy.control.CompilationUnit.compile(CompilationUnit.java:579)
-	at groovy.lang.GroovyClassLoader.doParseClass(GroovyClassLoader.java:323)
-	at groovy.lang.GroovyClassLoader.parseClass(GroovyClassLoader.java:293)
-	at PluginClassLoader for script-security//org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.GroovySandbox$Scope.parse(GroovySandbox.java:163)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsGroovyShell.doParse(CpsGroovyShell.java:190)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsGroovyShell.reparse(CpsGroovyShell.java:175)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsFlowExecution.parseScript(CpsFlowExecution.java:652)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsFlowExecution.start(CpsFlowExecution.java:598)
-	at PluginClassLoader for workflow-job//org.jenkinsci.plugins.workflow.job.WorkflowRun.run(WorkflowRun.java:335)
-	at hudson.model.ResourceController.execute(ResourceController.java:101)
-	at hudson.model.Executor.run(Executor.java:445)
-Finished: FAILURE
+[Pipeline] sh
++ grep -v false
++ jq -r '.items[] | select(.status.phase=="Running") | .status.containerStatuses[].ready'
++ kubectl get pods -n account-service-ns -l app=account-service -o json
++ true
+[Pipeline] echo
+⏳ Waiting for pods to stabilize... (checking again in 5 seconds)
+[Pipeline] sleep
+Sleeping for 5 sec
+[Pipeline] sh
++ kubectl get pods -n account-service-ns -l app=account-service -o wide
+No resources found in account-service-ns namespace.
+[Pipeline] echo
+📊 Current Pod Status (Attempt 13/180):
+[Pipeline] echo

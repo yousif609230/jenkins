@@ -1,5 +1,45 @@
 @Library('gph-neo-jenkins-library') _
 
+def monitorPodStatus(namespace, deploymentName) {
+    echo "🔄 Monitoring pod status for deployment ${deploymentName} in namespace ${namespace}..."
+    def stable = false
+    def attempts = 0
+    def maxAttempts = params.TIMEOUT.toInteger() * 12  // Convert minutes to 5-second intervals (12 checks per minute)
+    
+    while (!stable && attempts < maxAttempts) {
+        def podStatus = sh(
+            script: "kubectl get pods -n ${namespace} -l app=${deploymentName} -o wide",
+            returnStdout: true
+        ).trim()
+        
+        echo "📊 Current Pod Status (Attempt ${attempts + 1}/${maxAttempts}):"
+        echo podStatus
+        
+        // Check if all pods are running and ready
+        def allPodsReady = sh(
+            script: """
+                kubectl get pods -n ${namespace} -l app=${deploymentName} -o json | \
+                jq -r '.items[] | select(.status.phase=="Running") | .status.containerStatuses[].ready' | \
+                grep -v false || true
+            """,
+            returnStdout: true
+        ).trim()
+        
+        if (allPodsReady) {
+            stable = true
+            echo "✅ All pods are running and ready for deployment ${deploymentName}"
+        } else {
+            echo "⏳ Waiting for pods to stabilize... (checking again in 5 seconds)"
+            sleep 5
+            attempts++
+        }
+    }
+    
+    if (!stable) {
+        error "❌ Timeout waiting for pods to stabilize for deployment ${deploymentName} after ${params.TIMEOUT} minutes"
+    }
+}
+
 pipeline {
     agent any
     parameters {
@@ -171,46 +211,7 @@ pipeline {
                     The deployment ${env.SELECTED_DEPLOYMENT} in namespace ${env.SELECTED_NAMESPACE} has been successfully restarted
                     ========================================"""
                     
-                    def monitorPodStatus(namespace, deploymentName) {
-                        echo "🔄 Monitoring pod status for deployment ${deploymentName} in namespace ${namespace}..."
-                        def stable = false
-                        def attempts = 0
-                        def maxAttempts = params.TIMEOUT.toInteger() * 12  // Convert minutes to 5-second intervals (12 checks per minute)
-                        
-                        while (!stable && attempts < maxAttempts) {
-                            def podStatus = sh(
-                                script: "kubectl get pods -n ${namespace} -l app=${deploymentName} -o wide",
-                                returnStdout: true
-                            ).trim()
-                            
-                            echo "📊 Current Pod Status (Attempt ${attempts + 1}/${maxAttempts}):"
-                            echo podStatus
-                            
-                            // Check if all pods are running and ready
-                            def allPodsReady = sh(
-                                script: """
-                                    kubectl get pods -n ${namespace} -l app=${deploymentName} -o json | \
-                                    jq -r '.items[] | select(.status.phase=="Running") | .status.containerStatuses[].ready' | \
-                                    grep -v false || true
-                                """,
-                                returnStdout: true
-                            ).trim()
-                            
-                            if (allPodsReady) {
-                                stable = true
-                                echo "✅ All pods are running and ready for deployment ${deploymentName}"
-                            } else {
-                                echo "⏳ Waiting for pods to stabilize... (checking again in 5 seconds)"
-                                sleep 5
-                                attempts++
-                            }
-                        }
-                        
-                        if (!stable) {
-                            error "❌ Timeout waiting for pods to stabilize for deployment ${deploymentName} after ${params.TIMEOUT} minutes"
-                        }
-                    }
-                    
+                    // Monitor the pod status after restart
                     monitorPodStatus(env.SELECTED_NAMESPACE, env.SELECTED_DEPLOYMENT)
                 }
             }

@@ -1,21 +1,25 @@
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "sns:Publish"
-            ],
-            "Resource": "<your-sns-topic-arn>"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-            ],
-            "Resource": "arn:aws:logs:*:*:*"
-        }
-    ]
-}
+2024-12-10T08:19:51.593+03:00
+INIT_START Runtime Version: python:3.13.v13	Runtime Version ARN: arn:aws:lambda:eu-west-1::runtime:b881cbc9a10a8bcb3def9d9e9fe38f922bb36510a1d92d4ce85cf2a899eeabd8
+
+INIT_START Runtime Version: python:3.13.v13 Runtime Version ARN: arn:aws:lambda:eu-west-1::runtime:b881cbc9a10a8bcb3def9d9e9fe38f922bb36510a1d92d4ce85cf2a899eeabd8
+2024-12-10T08:19:51.929+03:00
+START RequestId: 9d92735b-aca0-4371-9e4b-36d1810f28b5 Version: $LATEST
+
+START RequestId: 9d92735b-aca0-4371-9e4b-36d1810f28b5 Version: $LATEST
+2024-12-10T08:19:53.732+03:00
+LAMBDA_WARNING: Unhandled exception. The most likely cause is an issue in the function code. However, in rare cases, a Lambda runtime update can cause unexpected function behavior. For functions using managed runtimes, runtime updates can be triggered by a function change, or can be applied automatically. To determine if the runtime has been updated, check the runtime version in the INIT_START log entry. If this error correlates with a change in the runtime version, you may be able to mitigate this error by temporarily rolling back to the previous runtime version. For more information, see https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html
+
+LAMBDA_WARNING: Unhandled exception. The most likely cause is an issue in the function code. However, in rare cases, a Lambda runtime update can cause unexpected function behavior. For functions using managed runtimes, runtime updates can be triggered by a function change, or can be applied automatically. To determine if the runtime has been updated, check the runtime version in the INIT_START log entry. If this error correlates with a change in the runtime version, you may be able to mitigate this error by temporarily rolling back to the previous runtime version. For more information, see https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html
+2024-12-10T08:19:53.732+03:00
+[ERROR] AttributeError: 'str' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/var/task/lambda_function.py", line 22, in lambda_handler
+    for ip_range in permission.get('ipRanges', []):
+
+[ERROR] AttributeError: 'str' object has no attribute 'get' Traceback (most recent call last):   File "/var/task/lambda_function.py", line 22, in lambda_handler     for ip_range in permission.get('ipRanges', []):
+2024-12-10T08:19:53.752+03:00
+END RequestId: 9d92735b-aca0-4371-9e4b-36d1810f28b5
+
+END RequestId: 9d92735b-aca0-4371-9e4b-36d1810f28b5
+2024-12-10T08:19:53.753+03:00
+REPORT RequestId: 9d92735b-aca0-4371-9e4b-36d1810f28b5	Duration: 1822.83 ms	Billed Duration: 1823 ms	Memory Size: 128 MB	Max Memory Used: 74 MB	Init Duration: 333.28 ms	

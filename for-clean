@@ -1,15 +1,56 @@
-{
-  "source": ["aws.ec2"],
-  "detail-type": ["AWS API Call via CloudTrail"],
-  "detail": {
-    "eventSource": ["ec2.amazonaws.com"],
-    "eventName": ["AuthorizeSecurityGroupIngress", "RevokeSecurityGroupIngress"],
-    "requestParameters": {
-      "ipPermissions": {
-        "ipRanges": {
-          "cidr": ["0.0.0.0/0"]
-        }
-      }
+import json
+import boto3
+import os
+
+def lambda_handler(event, context):
+    # Initialize AWS clients
+    sns = boto3.client('sns')
+    
+    # Get the SNS topic ARN from environment variable
+    sns_topic_arn = os.environ['SNS_TOPIC_ARN']
+    
+    # Parse CloudWatch event
+    detail = event['detail']
+    
+    # Check if this is a security group modification
+    if detail['eventName'] == 'AuthorizeSecurityGroupIngress':
+        group_id = detail['requestParameters']['groupId']
+        ip_permissions = detail['requestParameters'].get('ipPermissions', [])
+        
+        # Check for 0.0.0.0/0 in the IP ranges
+        for permission in ip_permissions:
+            for ip_range in permission.get('ipRanges', []):
+                if ip_range.get('cidrIp') == '0.0.0.0/0':
+                    # Construct message
+                    message = f"""
+                    ⚠️ WARNING: Open Internet Access (0.0.0.0/0) Added to Security Group
+                    
+                    Security Group ID: {group_id}
+                    AWS Account: {event['account']}
+                    Region: {event['region']}
+                    User: {detail['userIdentity'].get('userName', 'Unknown')}
+                    Source IP: {detail['sourceIPAddress']}
+                    Time: {event['time']}
+                    
+                    Port Range: {permission.get('fromPort', 'All')} - {permission.get('toPort', 'All')}
+                    Protocol: {permission.get('ipProtocol', 'All')}
+                    
+                    Please review this change immediately if it was not intended.
+                    """
+                    
+                    # Send SNS notification
+                    sns.publish(
+                        TopicArn=sns_topic_arn,
+                        Subject='Security Alert: Open Internet Access Added to Security Group',
+                        Message=message
+                    )
+                    
+                    return {
+                        'statusCode': 200,
+                        'body': json.dumps('Notification sent successfully')
+                    }
+    
+    return {
+        'statusCode': 200,
+        'body': json.dumps('No open internet access rules detected')
     }
-  }
-}

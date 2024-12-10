@@ -1,25 +1,67 @@
-2024-12-10T08:19:51.593+03:00
-INIT_START Runtime Version: python:3.13.v13	Runtime Version ARN: arn:aws:lambda:eu-west-1::runtime:b881cbc9a10a8bcb3def9d9e9fe38f922bb36510a1d92d4ce85cf2a899eeabd8
+import json
+import boto3
+import os
 
-INIT_START Runtime Version: python:3.13.v13 Runtime Version ARN: arn:aws:lambda:eu-west-1::runtime:b881cbc9a10a8bcb3def9d9e9fe38f922bb36510a1d92d4ce85cf2a899eeabd8
-2024-12-10T08:19:51.929+03:00
-START RequestId: 9d92735b-aca0-4371-9e4b-36d1810f28b5 Version: $LATEST
-
-START RequestId: 9d92735b-aca0-4371-9e4b-36d1810f28b5 Version: $LATEST
-2024-12-10T08:19:53.732+03:00
-LAMBDA_WARNING: Unhandled exception. The most likely cause is an issue in the function code. However, in rare cases, a Lambda runtime update can cause unexpected function behavior. For functions using managed runtimes, runtime updates can be triggered by a function change, or can be applied automatically. To determine if the runtime has been updated, check the runtime version in the INIT_START log entry. If this error correlates with a change in the runtime version, you may be able to mitigate this error by temporarily rolling back to the previous runtime version. For more information, see https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html
-
-LAMBDA_WARNING: Unhandled exception. The most likely cause is an issue in the function code. However, in rare cases, a Lambda runtime update can cause unexpected function behavior. For functions using managed runtimes, runtime updates can be triggered by a function change, or can be applied automatically. To determine if the runtime has been updated, check the runtime version in the INIT_START log entry. If this error correlates with a change in the runtime version, you may be able to mitigate this error by temporarily rolling back to the previous runtime version. For more information, see https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html
-2024-12-10T08:19:53.732+03:00
-[ERROR] AttributeError: 'str' object has no attribute 'get'
-Traceback (most recent call last):
-  File "/var/task/lambda_function.py", line 22, in lambda_handler
-    for ip_range in permission.get('ipRanges', []):
-
-[ERROR] AttributeError: 'str' object has no attribute 'get' Traceback (most recent call last):   File "/var/task/lambda_function.py", line 22, in lambda_handler     for ip_range in permission.get('ipRanges', []):
-2024-12-10T08:19:53.752+03:00
-END RequestId: 9d92735b-aca0-4371-9e4b-36d1810f28b5
-
-END RequestId: 9d92735b-aca0-4371-9e4b-36d1810f28b5
-2024-12-10T08:19:53.753+03:00
-REPORT RequestId: 9d92735b-aca0-4371-9e4b-36d1810f28b5	Duration: 1822.83 ms	Billed Duration: 1823 ms	Memory Size: 128 MB	Max Memory Used: 74 MB	Init Duration: 333.28 ms	
+def lambda_handler(event, context):
+    # Initialize AWS clients
+    sns = boto3.client('sns')
+    
+    # Get the SNS topic ARN from environment variable
+    sns_topic_arn = os.environ['SNS_TOPIC_ARN']
+    
+    print("Received event:", json.dumps(event, indent=2))  # Add logging for debugging
+    
+    # Parse CloudWatch event
+    detail = event.get('detail', {})
+    
+    # Check if this is a security group modification
+    if detail.get('eventName') == 'AuthorizeSecurityGroupIngress':
+        request_parameters = detail.get('requestParameters', {})
+        group_id = request_parameters.get('groupId')
+        
+        # Handle both direct IP permissions and ipPermissions list
+        ip_permissions = request_parameters.get('ipPermissions', [])
+        if not isinstance(ip_permissions, list):
+            ip_permissions = [ip_permissions]
+            
+        # Check for 0.0.0.0/0 in the IP ranges
+        for permission in ip_permissions:
+            ip_ranges = permission.get('ipRanges', [])
+            if not isinstance(ip_ranges, list):
+                ip_ranges = [ip_ranges]
+                
+            for ip_range in ip_ranges:
+                if isinstance(ip_range, dict) and ip_range.get('cidrIp') == '0.0.0.0/0':
+                    # Construct message
+                    message = f"""
+                    ⚠️ WARNING: Open Internet Access (0.0.0.0/0) Added to Security Group
+                    
+                    Security Group ID: {group_id}
+                    AWS Account: {event.get('account')}
+                    Region: {event.get('region')}
+                    User: {detail.get('userIdentity', {}).get('userName', 'Unknown')}
+                    Source IP: {detail.get('sourceIPAddress')}
+                    Time: {event.get('time')}
+                    
+                    Port Range: {permission.get('fromPort', 'All')} - {permission.get('toPort', 'All')}
+                    Protocol: {permission.get('ipProtocol', 'All')}
+                    
+                    Please review this change immediately if it was not intended.
+                    """
+                    
+                    # Send SNS notification
+                    sns.publish(
+                        TopicArn=sns_topic_arn,
+                        Subject='Security Alert: Open Internet Access Added to Security Group',
+                        Message=message
+                    )
+                    
+                    return {
+                        'statusCode': 200,
+                        'body': json.dumps('Notification sent successfully')
+                    }
+    
+    return {
+        'statusCode': 200,
+        'body': json.dumps('No open internet access rules detected')
+    }

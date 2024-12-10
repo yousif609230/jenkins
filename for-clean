@@ -1,36 +1,96 @@
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": "logs:CreateLogGroup",
-            "Resource": "arn:aws:logs:eu-west-1:132405888043:*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-            ],
-            "Resource": [
-                "arn:aws:logs:eu-west-1:132405888043:log-group:/aws/lambda/SGInboundCheckerFunction:*"
-            ]
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "sns:Publish"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-            ],
-            "Resource": "arn:aws:logs:*:*:*"
-        }
-    ]
-}
+import json
+import boto3
+import os
+import logging
+
+# Set up logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+def lambda_handler(event, context):
+    # Initialize AWS clients
+    sns = boto3.client('sns')
+    
+    try:
+        # Get the SNS topic ARN from environment variable
+        sns_topic_arn = os.environ['SNS_TOPIC_ARN']
+        logger.info(f"SNS Topic ARN: {sns_topic_arn}")
+        
+        # Verify SNS topic exists
+        try:
+            sns.get_topic_attributes(TopicArn=sns_topic_arn)
+            logger.info("Successfully verified SNS topic exists")
+        except Exception as e:
+            logger.error(f"Error verifying SNS topic: {str(e)}")
+            raise
+            
+    except KeyError:
+        logger.error("SNS_TOPIC_ARN environment variable is not set")
+        raise
+    
+    logger.info("Received event: " + json.dumps(event, indent=2))
+    
+    # Parse CloudWatch event
+    detail = event.get('detail', {})
+    
+    # Check if this is a security group modification
+    if detail.get('eventName') == 'AuthorizeSecurityGroupIngress':
+        request_parameters = detail.get('requestParameters', {})
+        group_id = request_parameters.get('groupId')
+        
+        # Handle both direct IP permissions and ipPermissions list
+        ip_permissions = request_parameters.get('ipPermissions', [])
+        if not isinstance(ip_permissions, list):
+            ip_permissions = [ip_permissions]
+            
+        # Check for 0.0.0.0/0 in the IP ranges
+        for permission in ip_permissions:
+            ip_ranges = permission.get('ipRanges', [])
+            if not isinstance(ip_ranges, list):
+                ip_ranges = [ip_ranges]
+                
+            for ip_range in ip_ranges:
+                if isinstance(ip_range, dict) and ip_range.get('cidrIp') == '0.0.0.0/0':
+                    # Log detection of 0.0.0.0/0
+                    logger.info("Detected 0.0.0.0/0 in security group rule")
+                    
+                    # Construct message
+                    message = f"""
+                    ⚠️ WARNING: Open Internet Access (0.0.0.0/0) Added to Security Group
+                    
+                    Security Group ID: {group_id}
+                    AWS Account: {event.get('account')}
+                    Region: {event.get('region')}
+                    User: {detail.get('userIdentity', {}).get('userName', 'Unknown')}
+                    Source IP: {detail.get('sourceIPAddress')}
+                    Time: {event.get('time')}
+                    
+                    Port Range: {permission.get('fromPort', 'All')} - {permission.get('toPort', 'All')}
+                    Protocol: {permission.get('ipProtocol', 'All')}
+                    
+                    Please review this change immediately if it was not intended.
+                    """
+                    
+                    logger.info("Attempting to send SNS notification")
+                    try:
+                        # Send SNS notification
+                        response = sns.publish(
+                            TopicArn=sns_topic_arn,
+                            Subject='Security Alert: Open Internet Access Added to Security Group',
+                            Message=message
+                        )
+                        logger.info(f"SNS publish response: {json.dumps(response, indent=2)}")
+                        
+                    except Exception as e:
+                        logger.error(f"Error publishing to SNS: {str(e)}")
+                        raise
+                    
+                    return {
+                        'statusCode': 200,
+                        'body': json.dumps('Notification sent successfully')
+                    }
+    
+    return {
+        'statusCode': 200,
+        'body': json.dumps('No open internet access rules detected')
+    }

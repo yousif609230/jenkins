@@ -11,3 +11,8 @@ helm install grafana grafana/grafana \
     --set admin.password=admin
 
 
+  Warning  FailedScheduling  118s  default-scheduler  0/3 nodes are available: pod has unbound immediate PersistentVolumeClaims. preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod..
+  Warning  FailedScheduling  117s  default-scheduler  0/3 nodes are available: pod has unbound immediate PersistentVolumeClaims. preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod..
+[root@tsbahvseksadm eksadmin]# kubectl decribe pod prometheus-server-5d4c9dc775-557hj -n monitoring
+error: unknown command "decribe" for "kubectl"
+

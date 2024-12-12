@@ -16,3 +16,6 @@ helm install grafana grafana/grafana \
 [root@tsbahvseksadm eksadmin]# kubectl decribe pod prometheus-server-5d4c9dc775-557hj -n monitoring
 error: unknown command "decribe" for "kubectl"
 
+
+
+helm install prometheus prometheus-community/prometheus \ --namespace monitoring \ --create-namespace \ --set rbac.create=true \ --set alertmanager.enabled=true \ --set prometheus.prometheusSpec.persistentVolume.enabled=false \ --set alertmanager.persistentVolume.enabled=false
